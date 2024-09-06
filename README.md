@@ -11,6 +11,8 @@
 * Verificar se a letra existe, mas está na posição incorreta;
 * Verificar se a letra não existe, armazenando-as e mostrando para o usuário.
 
+Site usado como modelo: [Jogo do Termo](https://term.ooo)
+
 *Linguagem utilizada: C*
 
 
