@@ -1,0 +1,89 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <time.h>
+
+void arquivo(char [], int, char []); // Modificamos a função para retornar a palavra sorteada
+void verifica_letra(char [], char []);
+
+
+
+int main(){
+    char nomeArq[] = "palavras.txt";
+    char palavra[6];
+    char segredo[6]; // Agora estamos declarando segredo na função main
+    int numero_gerado, i;
+
+    srand(time(NULL)); // inicializando a semente com o tempo corrente
+
+    numero_gerado = rand() % 401 + 1;
+    printf("%d\n", numero_gerado);
+
+    // Chamamos a função arquivo para obter a palavra sorteada e atribuímos a segredo
+    arquivo(nomeArq, numero_gerado, segredo);
+
+    printf("Palavra sorteada: %s\n", segredo); // Agora podemos imprimir segredo
+
+    printf("Digite uma palavra: ");
+    scanf("%s", palavra);
+    while (strlen(palavra) < 5 || strlen(palavra) > 5) {
+        printf("A palavra tem que ter apenas 5 letras!\n");
+        printf("Digite uma palavra: ");
+        scanf("%s", palavra);
+    }
+    for (i = 0; palavra[i]; i++) {
+        palavra[i] = toupper(palavra[i]);
+    }
+    verifica_letra(segredo, palavra);
+
+
+    return 0;
+}
+
+void arquivo(char nomeArq[], int numero_gerado, char segredo[]){
+    int sorteio_palavras = 0;
+    FILE *pf; // ponteiro para file
+
+    pf = fopen (nomeArq, "r");
+    if (pf == NULL){
+        printf("Algo inesperado aconteceu, pois o arquivo não foi encontrado!");
+        exit(1); // encerrando o programa com ERRO
+    }
+
+    while (sorteio_palavras < numero_gerado){
+        fgets(segredo, sizeof(segredo), pf);
+        sorteio_palavras++;
+    }
+
+    fclose(pf);
+}
+
+void verifica_letra(char segredo[], char palavra[]) {
+    int i, j;
+    int correta = 0; // Variável para rastrear se a palavra está correta
+    int letras_impressas[6] = {0}; // Um array para rastrear letras já impressas
+    int letra_encontrada = 0; // Variável para rastrear se a letra foi encontrada na palavra sorteada
+
+    for (i = 0; segredo[i]; i++) {
+        if (segredo[i] == palavra[i] && letras_impressas[i] == 0) {
+            printf("A letra %c esta correta!\n", palavra[i]);
+            correta = 1; // Indica que pelo menos uma letra está correta
+            letras_impressas[i] = 1; // Marca a letra como impressa
+        } else {
+            for (j = 0; palavra[j]; j++) {
+                if (segredo[i] == palavra[j] && letras_impressas[j] == 0) {
+                    printf("A letra %c existe, mas esta na posicao errada!\n", palavra[j]);
+                    letras_impressas[j] = 1; // Marca a letra como impressa
+                    letra_encontrada = 1; // Indica que a letra foi encontrada na palavra
+                }
+            }
+        }
+    }
+        if (correta == 0 && letra_encontrada == 0) {
+            printf("A letra digitada nao existe na palavra sorteada.\n");
+    }
+}
+
+
+
